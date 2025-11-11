@@ -63,8 +63,7 @@ while True:
         break
 
     try:
-        # Use system ping command
-        response = os.popen(f"ping -n 4 {hostname}").read()  # Use -c 4 for Linux/Mac
+        response = os.popen(f"ping -n 4 {hostname}").read() 
         c.send(response.encode('utf-8'))
     except Exception as e:
         c.send(f"Ping failed: {e}".encode('utf-8'))
