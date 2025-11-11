@@ -26,7 +26,58 @@ This commands includes
 • Other IP Commands e.g. show ip route etc.
 <BR>
 
+## Program 
+#### CLIENT
+```python
+import socket
+
+s = socket.socket()
+s.connect(('localhost', 8000))
+
+while True:
+    ip = input("Enter the website you want to ping (or type 'exit' to quit): ")
+    s.send(ip.encode('utf-8'))
+    if ip.lower() == 'exit':
+        break
+    print(s.recv(4096).decode('utf-8'))
+
+s.close()
+```
+#### SERVER 
+```python
+import socket
+import os
+
+s = socket.socket()
+s.bind(('localhost', 8000))
+s.listen(5)
+print("Server listening on port 8000...")
+
+c, addr = s.accept()
+print(f"Connection from {addr}")
+
+while True:
+    hostname = c.recv(1024).decode('utf-8')
+    if not hostname or hostname.lower() == 'exit':
+        print("Client disconnected.")
+        break
+
+    try:
+        # Use system ping command
+        response = os.popen(f"ping -n 4 {hostname}").read()  # Use -c 4 for Linux/Mac
+        c.send(response.encode('utf-8'))
+    except Exception as e:
+        c.send(f"Ping failed: {e}".encode('utf-8'))
+
+c.close()
+```
+
 ## Output
+#### CLIENT
+<img width="1092" height="595" alt="Screenshot 2025-11-11 085044" src="https://github.com/user-attachments/assets/032cf3e9-c756-4d88-828e-7000e8fb8f4c" />
+
+#### SERVER
+<img width="518" height="177" alt="Screenshot 2025-11-11 084747" src="https://github.com/user-attachments/assets/e8de3f45-6af7-456c-a0ae-895627d3b76a" />
 
 ## Result
 Thus Execution of Network commands Performed 
